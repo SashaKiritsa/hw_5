@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <body>
+        {% for word in requirements %}
+        <p>{{ word }}</p>
+        {% endfor %}
+    </body>
+{% endblock content %}
