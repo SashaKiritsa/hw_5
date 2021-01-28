@@ -3,7 +3,7 @@ from flask import render_template
 # from faker import Faker
 import requests
 import csv
-import base58
+from base58 import b58decode, b58encode
 
 # fake = Faker()
 
@@ -28,7 +28,7 @@ def requirements():
     return render_template('requirements.html', requirements=requirements)
 
 """
-2. Вывести `XX` случайно сгенерированных пользователей (имя и почту), где XX - параметр который регулирует количество пользователей (тип `int`)
+4. Вывести количество космонавтов, находящихся в настоящий момент на орбите
 """
 
 # @app.route('/mail_generate/', methods = ['GET', 'POST'])
@@ -46,10 +46,11 @@ def cosmo():
 
 
 
-
-# Вернуть значения среднего роста (в сантиметрах) и среднего веса (в килограммах)
-# Необходимые данные расположены в файле hw05.csv
-# Анализировать файл hw.csv нужно при каждом вызове
+"""
+3.Вернуть значения среднего роста (в сантиметрах) и среднего веса (в килограммах)
+Необходимые данные расположены в файле hw05.csv
+Анализировать файл hw.csv нужно при каждом вызове
+"""
 @app.route('/file_csv/', methods = ['GET', 'POST'])
 def file_csv():
     with open('hw05.csv', newline='') as csvfile:
@@ -75,14 +76,30 @@ def file_csv():
         middle_weight = round(middle_weight/i ,2)
     return render_template('file_csv.html', middle_height=middle_height, middle_weight=middle_weight, i=i)
 
+"""
+5. Закодировать входную строку `STRING` в формате base58
+"""
+@app.route('/base58/<string:s>/', methods= ['GET', 'POST'])
+def base58(s):
+    
+    if ' ' in s:
+        return '<h1>В этом запросе не должно быть пробелов</h1>'
+    else:
+        return b58encode(s)
+    return render_template ('base58.html', s=s)
 
-@app.route('/base58/', methods= ['GET', 'POST'])
-def base58():
 
-
-
-
-
+"""
+6. Преобразовать строку `STRING_IN_BASE58` в формате *base58* в исходную строку
+"""
+@app.route('/base58decode/<string:s>/', methods= ['GET', 'POST'])
+def base58decode(s):
+    if ' ' in s:
+        return '<h1>В этом запросе не должно быть пробелов</h1>'
+    else:
+        return b58decode(s)
+    return render_template ('base58decode.html', s=s)
+    
 
 
 
