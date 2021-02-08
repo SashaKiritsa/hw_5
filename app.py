@@ -1,12 +1,10 @@
 from flask import Flask
 from flask import render_template
-# from faker import Faker
+from faker import Faker
 import requests
 import csv
 from base58 import b58decode, b58encode
-
-# fake = Faker()
-
+from tabulate import tabulate
 app = Flask (__name__)
 
 
@@ -30,12 +28,6 @@ def requirements():
 """
 4. Вывести количество космонавтов, находящихся в настоящий момент на орбите
 """
-
-# @app.route('/mail_generate/', methods = ['GET', 'POST'])
-# def mail_generate():
-#     name = fake.name()
-#     email = fake.email()
-
 
 @app.route('/cosmo/', methods = ['GET', 'POST'])
 def cosmo():
@@ -86,7 +78,7 @@ def base58(s):
         return '<h1>В этом запросе не должно быть пробелов</h1>'
     else:
         return b58encode(s)
-    return render_template ('base58.html', s=s)
+    
 
 
 """
@@ -98,26 +90,23 @@ def base58decode(s):
         return '<h1>В этом запросе не должно быть пробелов</h1>'
     else:
         return b58decode(s)
-    return render_template ('base58decode.html', s=s)
     
 
+"""
+2. Вывести `XX` случайно сгенерированных пользователей (имя и почту)
+"""
 
-
-
-
-
-
-
-
-
-
-
+@app.route('/generate-users/<int:users>', methods = ["GET", "POST"])
+def generate_users(users):
+    if users == 0:
+        return '<h1>Вы ввели неправильный запрос!</h1> Попробуйте ещё раз.'
+    users_data = []
+    users_info = ['name', 'email']
+    fake = Faker('en_US')
+    for i in range(users):
+        users_data.append([fake.name(),fake.email()])
+        table = tabulate(users_data, users_info, tablefmt='grid')
+    return f'<pre>{table}</pre>'
 
 if __name__ == '__main__':
     app.run(debug=True)
-    
-
-
-
-
-
